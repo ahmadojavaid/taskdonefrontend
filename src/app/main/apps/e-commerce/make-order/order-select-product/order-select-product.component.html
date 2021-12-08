@@ -1,0 +1,75 @@
+<div id="order" class="page-layout simple fullwidth" fxLayout="column">
+
+    <div class="header mat-accent-bg" style="padding: 40px"
+    fxLayout="column" fxLayoutAlign="center center"
+    fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+    
+    <!-- APP TITLE -->
+    <div class="logo"
+        fxLayout="row" fxLayoutAlign="start center">
+       <mat-icon class="logo-icon mr-16" [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">
+           shopping_basket
+       </mat-icon>
+       <span class="logo-text h1" [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Make Order</span>
+    </div>
+    <!-- / APP TITLE -->
+    <button mat-raised-button
+    class="save-product-button mat-white-bg"
+    (click)="createOrder()"
+     >
+    <span>CREATE ORDER</span>
+    </button>
+    
+    </div>
+    <div class="content p-24">
+            
+            <form class="mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column" fxLayoutAlign="start"
+                      fxFlex="1 0 auto" name="form" [formGroup]="form">
+                      <div class="h2 mb-24">Add Products to this Order</div>
+        <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                
+            <mat-form-field fxFlex="100">
+                <mat-select (selectionChange)="onSelectCategory()" placeholder="Categories" formControlName="category" required>
+                    <mat-option *ngFor="let category of categoriesList" [value]="category.id">{{category.categoryName}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="formErrors.category.required">
+                    Country is required!
+                </mat-error>
+            </mat-form-field>
+            
+
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+            <mat-form-field fxFlex="100">
+                <mat-select  placeholder="Toppings" [formControl]="toppings" multiple>
+                  <mat-option *ngFor="let topping of toppingList" [value]="topping.id">{{topping.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+        </div>
+        <mat-form-field fxFlex="34">
+            <input matInput placeholder="Discount" formControlName="discount"  required>
+             <mat-error *ngIf="formErrors.discount.required">
+                discount is required!
+            </mat-error> 
+        </mat-form-field>
+        <mat-form-field fxFlex="34">
+            <input matInput placeholder="Transaction Id" formControlName="transactionId"  required>
+             <mat-error *ngIf="formErrors.transactionId.required">
+                Transaction Id is required!
+            </mat-error> 
+        </mat-form-field>
+        <mat-form-field fxFlex="34">
+            <input matInput placeholder="Payment Method" formControlName="method"  required>
+             <mat-error *ngIf="formErrors.method.required">
+                Method is required!
+            </mat-error> 
+        </mat-form-field>
+        <mat-form-field fxFlex="34">
+            <input matInput placeholder="Carrier" formControlName="carrier"  required>
+             <mat-error *ngIf="formErrors.carrier.required">
+                Carrier is required!
+            </mat-error> 
+        </mat-form-field>
+        </form>
+    </div>
+</div>

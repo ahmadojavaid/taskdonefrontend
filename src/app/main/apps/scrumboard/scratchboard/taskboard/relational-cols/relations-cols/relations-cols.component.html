@@ -1,0 +1,15 @@
+<div class="pull-btn-right" (click)="onNoClick()">
+    <button mat-icon-button color="primary">
+      <mat-icon aria-label="clear">clear</mat-icon>
+    </button>
+</div>
+<div class="container-outer-ui">
+  <label class="label-form">Select Field</label>
+  <select class="selectbox" (change) = "makeRelation(group,allHeadings.length,$event)">
+    <option value="">SELECT</option>
+    <option *ngFor = "let boardheading of boardHeadings;index as h"
+            value="{{h}}">
+            {{boardheading.tab | uppercase}}
+    </option>
+  </select>
+</div>

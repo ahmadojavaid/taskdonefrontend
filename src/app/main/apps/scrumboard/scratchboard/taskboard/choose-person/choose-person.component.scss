@@ -1,0 +1,18 @@
+.title-popup{
+  color:#333;
+}
+.form-person{
+  .example-full-width{
+    margin-right: 10px;
+  }
+}
+.popup-outer-ui{
+  display: inline-block;
+  width: 100%;
+  position: relative;
+  .close-btn{
+    position: absolute;
+    top: -22px;
+    right: -22px;
+  }
+}

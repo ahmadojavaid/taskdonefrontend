@@ -1,0 +1,15 @@
+<mat-sidenav-container>
+  <div id="tabular-main">
+      <div class="header mat-accent-bg p-16 p-mat-24" fxLayout="column">
+        <div class="header-board-name mb-8 mb-mat-0"
+          fxLayout="row" fxLayoutAlign="start center"
+          fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="start center"
+          fxFlex="1 0 100%" fxFlex.gt-xs="1 0 auto"
+          fxFlexOrder="1" fxFlexOrder.gt-xs="2">
+           <mat-icon class="board-subscribe s-16">remove_red_eye</mat-icon>
+           <app-edit-board-name style="width:100%" [boardDataEvent]="boardValue"></app-edit-board-name>
+        </div>
+    </div>
+      <app-taskboard (boardDataEvent)="boardValues($event)"></app-taskboard>
+    </div>
+</mat-sidenav-container>

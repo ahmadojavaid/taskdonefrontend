@@ -1,0 +1,75 @@
+<div id="mail-configuration" class="page-layout simple fullwidth grey-100-bg">
+
+    <!-- CONTENT -->
+    <div class="content p-24 w-100-p">
+
+        <!-- WIDGET GROUP -->
+        <div class="widget-group"  fxLayout="row wrap" fxFlex="100" fxLayoutAlign="start start" [@animateStagger]="{value:'50'}">
+		
+		
+            <!-- WIDGET 1 -->
+            <div [@animate]="{value:'*',params:{y:'100%'}}"  class="widget m-20 warn-300-bg" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+                <!-- Front -->
+				
+                <div class="fuse-widget-front  mat-elevation-z2" [routerLink]="['/apps/mail/mail-configuration/gmail']">
+                    <div class="pt-8 pb-32" fxLayout="column" fxLayoutAlign="center center">                        
+                        <div class="h1">Gmail</div>
+                    </div>
+                    <div class="p-16 grey-50-bg border-top" fxLayout="row" fxLayoutAlign="center center">
+                        <span class="h4 ml-8">Configure</span>
+                    </div>
+                </div>
+                <!-- / Front -->
+            </div>
+            <!-- / WIDGET 1 -->
+			
+			
+			 <!-- WIDGET 2 -->
+            <div [@animate]="{value:'*',params:{y:'100%'}}"  class="widget m-20 deep-purple-300-bg" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+                <!-- Front -->
+                <div class="fuse-widget-front  mat-elevation-z2" [routerLink]="['/apps/mail/mail-configuration/yahoo']">
+                    <div class="pt-8 pb-32" fxLayout="column" fxLayoutAlign="center center">                        
+                        <div class="h1">Yahoo!</div>
+                    </div>
+                    <div class="p-16 grey-50-bg border-top" fxLayout="row" fxLayoutAlign="center center">
+                        <span class="h4 ml-8">Configure</span>
+                    </div>
+                </div>
+                <!-- / Front -->
+            </div>
+             <!-- / WIDGET 2 -->
+			 
+             <!-- WIDGET 3 -->
+            <div [@animate]="{value:'*',params:{y:'100%'}}"  class="widget m-20 orange-300-bg" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+                <!-- Front -->
+                <div class="fuse-widget-front  mat-elevation-z2" [routerLink]="['/apps/mail/mail-configuration/outlook']">
+                    <div class="pt-8 pb-32" fxLayout="column" fxLayoutAlign="center center">                        
+                        <div class="h1">Outlook</div>
+                    </div>
+                    <div class="p-16 grey-50-bg border-top" fxLayout="row" fxLayoutAlign="center center">
+                        <span class="h4 ml-8">Configure</span>
+                    </div>
+                </div>
+                <!-- / Front -->
+            </div>
+            <!-- / WIDGET 3 -->
+						
+			 <!-- WIDGET 4 -->
+            <div [@animate]="{value:'*',params:{y:'100%'}}"  class="widget m-20" fxLayout="column" fxFlex="100" fxFlex.gt-xs="50" fxFlex.gt-md="25">
+                <!-- Front -->
+                <div class="fuse-widget-front primary-300-bg mat-elevation-z2" [routerLink]="['/apps/mail/mail-configuration/custom']">
+                    <div class="pt-8 pb-32" fxLayout="column" fxLayoutAlign="center center">                        
+                        <div class="h1">Custom</div>
+                    </div>
+                    <div class="p-16 grey-50-bg border-top" fxLayout="row" fxLayoutAlign="center center">
+                        <span class="h4 ml-8">Configure</span>
+                    </div>
+                </div>
+                <!-- / Front -->
+            </div>
+            <!-- / WIDGET 4 -->	
+        </div>
+        <!-- / WIDGET GROUP -->
+    </div>
+    <!-- / CONTENT -->
+</div>

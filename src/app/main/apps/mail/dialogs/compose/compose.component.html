@@ -1,0 +1,120 @@
+<div class="dialog-content-wrapper">
+    <mat-toolbar class="mat-accent m-0">
+        <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+            <span class="title dialog-title">New Message</span>
+            <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <div mat-dialog-content class="p-24 m-0" fusePerfectScrollbar>
+
+        <form name="composeForm" [formGroup]="composeForm" class="compose-form" fxLayout="column" fxFlex>
+
+            <!-- <mat-form-field>
+                <input matInput name="from"
+                       placeholder="From"
+                       formControlName="from"
+                       type="text" required
+                       [email]="true">
+            </mat-form-field> -->
+
+            <mat-form-field>
+                <input matInput
+                       name="to"
+                       placeholder="To"
+					             ngModel
+                       formControlName="to"
+                       type="text" required>
+          </mat-form-field>
+
+            <div class="show-hide-extra-fields" (click)="toggleExtraToFields()">
+                <span [fxShow]="!showExtraToFields">Show CC & BCC</span>
+                <span [fxShow]="showExtraToFields">Hide CC & BCC</span>
+            </div>
+
+            <mat-form-field [fxShow]="showExtraToFields">
+                <input matInput
+                       name="cc"
+                       placeholder="Cc" ngModel
+                       formControlName="cc"
+                       type="text">
+            </mat-form-field>
+
+            <mat-form-field [fxShow]="showExtraToFields">
+                <input matInput
+                       name="bcc"
+                       placeholder="Bcc"
+                       formControlName="bcc"
+                       type="email">
+            </mat-form-field>
+
+            <mat-form-field>
+                <input matInput name="subject"
+                       placeholder="Subject"
+                       formControlName="subject" required>
+            </mat-form-field>
+
+            <mat-form-field>
+                <textarea matInput name="message"
+                          placeholder="Message"
+                          formControlName="message"
+                          rows="6" required>
+                </textarea>
+            </mat-form-field>
+
+            <input  type="file"
+                    id="fileLoader"
+                    name="attachments"
+                    title="Load File"
+                    multiple="multiple"
+                    (change)="uploadComposeAttachments($event)"
+                    #file_btn >
+            <div class="attachment-list" *ngFor="let file of composeAttachmentFiles; let i = index">
+
+                <div class="attachment" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div>
+                        <span class="filename">{{file.name}} </span>
+                        <span class="size">({{((file.size)/1024) | number:'1.0-0'}} KB)</span>
+                    </div>
+
+                    <button mat-icon-button aria-label="Delete attachment" (click)="removeComposeAttachments(i)">
+                        <mat-icon class="s-16">close</mat-icon>
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center">
+        <div>
+            <button mat-raised-button
+                    (click)="matDialogRef.close(['send',composeForm])"
+                    class="save-button mat-accent"
+                    [disabled]="composeForm.invalid"
+                    aria-label="SAVE">
+                SEND
+            </button>
+
+            <button mat-icon-button matTooltip="Attach a file" (click)="file_btn.click()">
+                <mat-icon>attach_file</mat-icon>
+            </button>
+        </div>
+
+        <!-- <button mat-icon-button (click)="matDialogRef.close(['delete',composeForm])"
+                aria-label="Delete"
+                matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+        </button> -->
+
+        <!-- [disabled]="composeForm.invalid" -->
+        <button mat-raised-button
+                    (click)="matDialogRef.close(['draft',composeForm])"
+                    class="save-button mat-accent"
+                    aria-label="">
+                DRAFT
+        </button>
+    </div>
+</div>

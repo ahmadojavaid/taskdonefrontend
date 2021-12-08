@@ -1,0 +1,763 @@
+<mat-drawer-container>
+    <mat-drawer #drawer class="sideDrawer" position="end">
+        <mat-tab-group>
+            <!-- <mat-tab label="Updates"></mat-tab> -->
+            <mat-tab label="Info Boxes">
+                <mat-tab-group class="mat-table-heading">
+                    <mat-tab label="Notes" class="mat-heading-center">
+                    <div *ngIf="!notesToggle">
+                      <button mat-raised-button
+                              class="mat-raised-button-add-attachement"
+                              color="accent" (click)="onOpenNotes()">
+                              <mat-icon aria-label="">notes</mat-icon> Notes
+                      </button>
+
+                      <div *ngFor="let note of notesAL" >
+                          <mat-list class="notes-ui">
+                            <mat-list-item [froalaView]="note.notes" class="notes-ui-inner">
+                            </mat-list-item>
+                            <span class="note-delete-ico">
+                              <mat-icon style="cursor: pointer;" (click)="onNotesDelete(note.id)">delete</mat-icon>
+                            </span>
+                            <!-- <mat-divider></mat-divider> -->
+                          </mat-list>
+                      </div>
+
+                      <div *ngIf="notesAL.length == 0">
+                        <h2>
+                          <strong>
+                            <span style="font-size:20px;color: red;margin-left: 162px;">No Notes Found</span>
+                          </strong>
+                        	<br>
+                        	<br>
+                        </h2>
+                      </div>
+                    </div>
+                    <br/>
+                    <br/>
+                      <div *ngIf="notesToggle">
+                          <div [froalaEditor] [(froalaModel)]="editorContent"></div>
+                          <br/><br/>
+                          <button  mat-raised-button color="accent" class="mr-15" (click)="SaveNotes(editorContent)">
+                            <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin" style="font-size: 25px;color: white;"></i>
+                            <span *ngIf="!loading">Save</span>
+                          </button>
+                          <button  mat-raised-button color="warn" (click)="onOpenNotes()">Close</button>
+                      </div>
+
+                    </mat-tab>
+
+                    <!-- notes -->
+                  <mat-tab label="Attachments" class="mat-heading-center">
+                          <button mat-raised-button class="mat-raised-button-add-attachement" color="accent" (click)="onOpenAttachment()" *ngIf="!attachmentToggle"><mat-icon aria-label="">attach_file</mat-icon>Attachment</button>
+                          <div class="addAttachment" *ngIf="attachmentToggle">
+                              <form class="example-form" (ngSubmit)="onAddAttachment(addAttachForm.value)" #addAttachForm="ngForm">
+                                  <mat-form-field class="example-full-width mr-15 attachement-field">
+                                    <input matInput placeholder="File Name" ngModel name="alFileName" required>
+                                  </mat-form-field>
+                                  <mat-form-field class="example-full-width">
+                                      <input matInput placeholder="Notes" ngModel name="alFileNote" required>
+                                  </mat-form-field>
+
+                                   <div>
+                                      <input class="choosefile-box" type="file" name="alFile" ngModel (change)="uploadAttachments($event)" required>
+                                   </div>
+                                  <div>
+                                      <button  mat-raised-button color="accent" class="mr-15" [disabled]="addAttachForm.invalid">
+                                        <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin" style="font-size: 25px;color: white;"></i>
+                                        <span *ngIf="!loading">Save</span>
+                                      </button>
+                                      <button  mat-raised-button color="warn" (click)="onOpenAttachment()">Close</button>
+                                  </div>
+                              </form>
+                          </div>
+                          <div *ngIf="!attachmentToggle && attachmentsAL.length !== 0">
+                              <table  mat-table [dataSource]="attachmentsAL"
+                                      class="mat-elevation-z8 attachmentTable">
+
+                                  <ng-container matColumnDef="filename">
+                                    <th mat-header-cell *matHeaderCellDef class="tab-head-ui">File Name</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.filename}} </td>
+                                  </ng-container>
+
+                                  <ng-container matColumnDef="notes">
+                                    <th mat-header-cell *matHeaderCellDef class="tab-head-ui"> Notes </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.notes}} </td>
+                                  </ng-container>
+
+                                  <ng-container matColumnDef="user_id">
+                                    <th mat-header-cell *matHeaderCellDef class="tab-head-ui"> Uploaded By </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.user_id[0].fullName}} </td>
+                                  </ng-container>
+
+                                  <ng-container matColumnDef="updated_at">
+                                    <th mat-header-cell *matHeaderCellDef class="tab-head-ui"> Last Updated </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.updated_at}} </td>
+                                  </ng-container>
+
+                                  <ng-container matColumnDef="actions">
+                                      <th mat-header-cell *matHeaderCellDef class="tab-head-ui"> Actions </th>
+                                      <td mat-cell *matCellDef="let element">
+                                          <mat-icon style="cursor: pointer;" (click)="onAttachmentDelete(element.id)">delete</mat-icon>
+                                          <!-- <mat-icon style="cursor: pointer;"
+                                                    (click)="onAttachmentDownload('http://1.6.98.141/taskdone/assets/images/backgrounds/dark-material-bg.jpg','copy.png')">cloud_download
+
+
+                                        </mat-icon> -->
+                                      </td>
+                                    </ng-container>
+
+                                  <tr mat-header-row *matHeaderRowDef="attachmentsALColumns"></tr>
+                                  <tr mat-row *matRowDef="let row; columns: attachmentsALColumns;"></tr>
+                              </table>
+                        </div>
+                        <div *ngIf="!attachmentToggle && attachmentsAL.length == 0">
+                          <h2>
+                            <strong>
+                              <span style="font-size:20px;color: red;margin-left: 162px;">No Attachments Found</span>
+                            </strong>
+                            <br>
+                            <br>
+                          </h2>
+                        </div>
+                  </mat-tab> <!-- a ttachments -->
+                </mat-tab-group>
+            </mat-tab>
+            <mat-tab label="Activity Logs">
+                <div class="activityLog">
+                  <table *ngIf="activityLog" border="0" cellspacing="0" cellpadding="0">
+                      <tr *ngFor="let activity of activityLog" >
+                          <td matTooltip="{{activity.updated_at | amDateFormat:'MMMM Do YYYY, h:mm a'}}" class="timestamp-ui">
+                              <span class="time-col"><mat-icon>access_time</mat-icon>
+                              <span>{{activity.updated_at | amTimeAgo:true }}</span>
+                            </span>
+                          </td>
+                          <td><span matTooltip="{{activity.user_id[0].fullName}}" class="person-name">{{activity.user_id[0].fullName}}</span></td>
+                          <td><span class="change-on-tag" >{{activity.change_field}}</span></td>
+                          <td>
+                              <span *ngIf="activity.change_field_type !== 'person' && activity.change_field_type !== 'date' && activity.change_field_type !== 'timeline'">{{activity.change_value.before}} </span>
+                              <span *ngIf="activity.change_field_type == 'person' && activity.change_field_type !== 'date' && activity.change_field_type !== 'timeline'">{{activity.change_value.before[0]?.fullName}}</span>
+                              <span *ngIf="activity.change_field_type == 'date' && activity.change_field_type !== 'person' && activity.change_field_type !== 'timeline'">
+                                  {{activity.change_value.before == 'date' ? '' : activity.change_value.before | amDateFormat:'MMM Do YYYY' }}
+                              </span>
+                              <span *ngIf="activity.change_field_type == 'timeline' && activity.change_field_type !== 'date' && activity.change_field_type !== 'person'">{{activity.change_value.before.start | amDateFormat:'MMM Do'}} - {{activity.change_value.before.end | amDateFormat:'MMM Do'}}</span>
+                              <span> > </span>
+                              <span *ngIf="activity.change_field_type !== 'person' && activity.change_field_type !== 'date' && activity.change_field_type !== 'timeline'"> {{activity.change_value.after}} </span>
+                              <span *ngIf="activity.change_field_type == 'person' && activity.change_field_type !== 'date' && activity.change_field_type !== 'timeline'">{{activity.change_value.after[0].fullName}}</span>
+                              <span *ngIf="activity.change_field_type == 'date' && activity.change_field_type !== 'person' && activity.change_field_type !== 'timeline'">{{activity.change_value.after | amDateFormat:'MMM Do YYYY'}}</span>
+                              <span *ngIf="activity.change_field_type == 'timeline' && activity.change_field_type !== 'date' && activity.change_field_type !== 'person'">{{activity.change_value.after.start | amDateFormat:'MMM Do'}} - {{activity.change_value.after.end | amDateFormat:'MMM Do'}}</span>
+                          </td>
+                      </tr>
+                  </table>
+
+                  <div *ngIf="activityLog.length == 0">
+                    <h2>
+                      <strong>
+                        <span style="font-size:20px;color: red;margin-left: 162px;">No Activity Found</span>
+                      </strong>
+                      <br>
+                      <br>
+                    </h2>
+                  </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+    </mat-drawer>
+    <mat-drawer-content>
+            <div class="table-wrap">
+                <div [ngStyle]="{'min-width.px': tblWidth}">
+                    <table class="scratchboard-tbl" *ngFor="let boardhead of boardheads;index as i">
+                        <tr>
+                          <th></th>
+                          <th *ngFor="let head of boardhead.heading;index as h"  class="th-relative">
+                           <div *ngIf="changehead(i,h)" class="changeHead_sboard">
+                             <form [formGroup]="form" (ngSubmit)="onFormHeadingSubmit(i,h)"
+                                   fxLayout="row" fxFlex="1 0 auto">
+                                      <input formControlName="head_name"
+                                             #nameInput
+                                             placeholder="Enter heading"
+                                             class="table-search">
+                                  <button mat-icon-button fxFlex="0 1 auto" (click)="closeForm(i,h)" type="button">
+                                      <mat-icon>close</mat-icon>
+                                  </button>
+
+                                  <button mat-icon-button fxFlex="0 1 auto">
+                                      <mat-icon>check</mat-icon>
+                                   </button>
+                              </form>
+                           </div>
+
+                          <span *ngIf="!changehead(i,h)" (click) ='editHeading(i,h,head.tab)'>
+                                {{ head.tab | uppercase}}
+                          </span>
+                          <mat-icon *ngIf="dbResult && h !='0'" (click) = "Col_delete(i,h)" class="col-delete-icn">delete</mat-icon>
+                    </th>
+                    <th>
+                        <mat-icon class="addNew-icon" *ngIf="!showOpts[i]" (click)="popupOpts_show(i)">add_circle</mat-icon>
+                           <div class="mat-popup" *ngIf="showOpts[i]">
+                              <mat-icon class="addNew-icon" (click) = "popupOpts_show(i)">remove_circle</mat-icon>
+                           <div class="popup-show-box">
+                              <p class="pop-addrow">
+                                <a (click) = "addRow(i)" matTooltip="Row">
+                                  <span><mat-icon>playlist_add</mat-icon></span>
+                                </a>
+                              </p>
+                              <a (click) = "addCols(i, 'status','status')" matTooltip="Status">
+                                  <span><mat-icon>menu</mat-icon></span>
+                              </a>
+                              <a  (click) = "addCols(i,'person','person')" matTooltip="Person">
+                                <span><mat-icon>person</mat-icon></span>
+                              </a>
+                              <a  (click) = "addCols(i,'date','date')" matTooltip="Date">
+                                    <span><mat-icon>date_range</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'timeline','timeline')" matTooltip="Timeline">
+                                      <span><mat-icon>timeline</mat-icon></span>
+                              </a>
+                              <!-- <a (click) = "addCols(i,'commission','comission')" matTooltip="Commission"><span><mat-icon>money</mat-icon></span></a> -->
+                              <a (click) = "addCols(i,'text','text')" matTooltip="Text">
+                                    <span><mat-icon>text_fields</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'number','number')" matTooltip="Number">
+                                    <span><mat-icon>plus_one</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'phone','phone')" matTooltip="Phone">
+                                  <span><mat-icon>phone</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'checkbox','checkbox')" matTooltip="Checkbox">
+                                  <span><mat-icon>check_box</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'invite','invite')" matTooltip="Invite">
+                                  <span><mat-icon>insert_invitation</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'link','link')" matTooltip="Link">
+                                    <span><mat-icon>link</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'location','location')" matTooltip="Location">
+                                    <span><mat-icon>location_city</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'country','country')" matTooltip="Country">
+                                    <span><mat-icon>add_location</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'auto-number','auto-number')" matTooltip="Auto number">
+                                        <span><mat-icon>plus_one</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'custom-field','custom-field')" matTooltip="Custom Field">
+                                    <span><mat-icon>note_add</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'subtraction','subtraction')" matTooltip="Subtraction">
+                                    <span><mat-icon>looks_one</mat-icon></span>
+                              </a>
+                              <a (click) = "addCols(i,'percentage','percentage')" matTooltip="Percentage">
+                                  <span><mat-icon>attach_money</mat-icon></span>
+                              </a>
+                              <!-- <a (click) = "addCols(i,'assign-task','assign-task')" matTooltip="Assign Task"><span><mat-icon>assignment_late</mat-icon></span></a> -->
+                            </div>
+                        </div>
+                      </th>
+                  </tr>
+
+                      <tr *ngFor="let boards of boardhead.boards;index as r">
+                           <td><mat-icon (click) = "row_delete(i,r)" class="col-remove-icn remove-row">remove</mat-icon></td>
+                           <td *ngFor="let board of boards.tab; index as a" >
+                            <p [ngSwitch]="boardhead.heading[a].type">
+                              <span *ngSwitchCase="'row'" class="rowTab">
+                                      <span *ngIf="!editRow(i,r,a)" style="cursor:pointer;">
+                                          <span (click) = "Clk_editRow(i,r,a)" [matTooltip]="board">{{board}}</span>
+                                      </span>
+                                    <div *ngIf="editRow(i,r,a)">
+                                        <form [formGroup]="rowForm" class="tabular-form">
+                                         <mat-form-field class="tabular-form-width">
+                                             <input matInput formControlName="rowField" [ngModel]="board" placeholder="Enter text">
+                                             <mat-hint allign="start" *ngIf="rowForm.controls['rowField'].hasError('required') && rowForm.controls['rowField'].touched"
+                                             style="color:#f44336">
+                                               Text is Required.
+                                             </mat-hint>
+                                          </mat-form-field>
+                                           <div class="edit-wrapper-btn">
+                                             <button class="number-btn-css"
+                                                     mat-min-fab color="primary"
+                                                     type="submit"
+                                                     (click)="onRowFormSubmit(rowForm,i,r,a)">
+                                                 <mat-icon>done</mat-icon>
+                                             </button>
+
+                                             <button class="number-btn-css"
+                                                     mat-min-fab color="warn"
+                                                     type="cancel"
+                                                     (click)="onClose(i,r,a)">
+                                                 <mat-icon>clear</mat-icon>
+                                             </button>
+                                         </div>
+                                     </form>
+                                    </div>
+                                  <mat-icon class="row-edit-icn" (click)="onActivity(i,r,a)">access_time</mat-icon>
+                              </span>
+
+                              <span *ngSwitchCase="'text'">
+                                <span *ngIf="!editRow(i,r,a)">
+                                      <span class="text-css" [matTooltip]="board == 'text' ? 'Please add Description' : board"
+                                          (click) = "Clk_editRow(i,r,a)">
+                                          {{board == 'text' ? 'Please add Description' : board }}
+                                      </span>
+                                </span>
+                                  <div *ngIf="editRow(i,r,a)">
+                                      <form [formGroup]="textForm" class="tabular-form">
+                                       <mat-form-field class="tabular-form-width">
+                                           <input matInput formControlName="textField" [ngModel]="board == 'text' ? 'Please add Description' : board"
+                                           placeholder="Description">
+                                           <mat-hint allign="start" *ngIf="textForm.controls['textField'].hasError('required') && textForm.controls['textField'].touched"
+                                           style="color:#f44336">
+                                             Description is Required.
+                                           </mat-hint>
+                                        </mat-form-field>
+                                         <div class="edit-wrapper-btn">
+                                           <button class="number-btn-css"
+                                                   mat-min-fab color="primary"
+                                                   type="submit"
+                                                   (click)="ontextFormSubmit(textForm,i,r,a)">
+                                               <mat-icon>done</mat-icon>
+                                           </button>
+
+                                           <button class="number-btn-css"
+                                                   mat-min-fab color="warn"
+                                                   type="cancel"
+                                                   (click)="onClose(i,r,a)">
+                                               <mat-icon>clear</mat-icon>
+                                           </button>
+                                       </div>
+                                   </form>
+                                  </div>
+                              </span>
+
+                              <span *ngSwitchCase="'number'">
+                                  <span *ngIf="!editRow(i,r,a)">
+                                      <span class="text-css" [matTooltip]="board == 'number' ? 'Please Select any Number' : board "
+                                            (click) = "Clk_editRow(i,r,a)">
+                                            {{board == 'number' ? 'Please Select any Number' : board}}
+                                      </span>
+                                  </span>
+
+                                  <div *ngIf="editRow(i,r,a)">
+                                      <form [formGroup]="numberForm"
+                                            class="tabular-form">
+                                           <mat-form-field class="tabular-form-width">
+                                             <input matInput type="number" formControlName ="numberField"
+                                                    [ngModel]="board == 'number' ? '0' : board "
+                                                    placeholder="Select Number">
+                                            <mat-hint *ngIf="numberForm.controls['numberField'].hasError('required') && numberForm.controls['numberField'].touched" style="color:#f44336">You must include a Number.</mat-hint>
+                                          </mat-form-field>
+                                          <br/>
+                                           <div class="edit-wrapper-btn">
+                                             <button class="number-btn-css"
+                                                      mat-mini color="primary"
+                                                      type="submit" (click)="onNumberSubmit(numberForm,i,r,a)">
+                                                <mat-icon>done</mat-icon>
+                                              </button>
+
+                                             <button class="number-btn-css" mat-mini color="warn" type="cancel"
+                                              (click)="onClose(i,r,a)">
+                                                <mat-icon>clear</mat-icon>
+                                             </button>
+                                           </div>
+                                     </form>
+                            </div>
+                              </span>
+
+                              <span *ngSwitchCase="'phone'">
+                                 <span *ngIf="!editRow(i,r,a)">
+                                      <span style="text-decoration: underline;"
+                                            [matTooltip]="board == 'phone' ? 'Please add Phone number' : board"
+                                            class="text-css"
+                                            (click) = "Clk_editRow(i,r,a)">
+                                          {{board == 'phone' ? 'Please add Phone number' : board }}
+                                      </span>
+                                  </span>
+                                  <div *ngIf="editRow(i,r,a)">
+                                  <form [formGroup]="phoneForm"
+                                        class="tabular-form">
+                                       <mat-form-field class="tabular-form-width">
+                                         <input matInput formControlName ="phone" [maxLength]="10"
+                                                [ngModel]="board == 'phone' ? '1234567890' : board"
+                                                placeholder="Phone Number">
+                                      </mat-form-field>
+                                       <div class="errors-container">
+                                          <small class="error-has" *ngIf="phoneForm.controls['phone'].hasError('required') && phoneForm.controls['phone'].touched" style="color:#f44336">Phone Number is Required.</small>
+                                            <small class="error-has" *ngIf="phoneForm.controls['phone'].errors?.phone && phoneForm.controls['phone'].touched" style="color:#f44336">Please include a valid phone number.</small>
+                                            <small class="error-has" *ngIf="phoneForm.controls['phone'].hasError('minlength') && phoneForm.controls['phone'].touched" style="color:#f44336">Phone Number must be at least 5 digits long.</small>
+                                            <small class="error-has" *ngIf="phoneForm.controls['phone'].hasError('maxlength') && phoneForm.controls['phone'].touched" style="color:#f44336">Phone Number cannot exceed 10 digits.</small>
+                                       </div>
+                                       <div class="edit-wrapper-btn">
+                                         <button class="number-btn-css"
+                                                  mat-min-fab color="primary"
+                                                  type="submit" (click)="onPhoneNumberSubmit(phoneForm,i,r,a)">
+                                                  <mat-icon>done</mat-icon>
+                                          </button>
+
+                                         <button class="number-btn-css" mat-min-fab color="warn" type="cancel"
+                                          (click)="onClose(i,r,a)">
+                                          <mat-icon>clear</mat-icon>
+                                         </button>
+                                       </div>
+                                 </form>
+                               </div>
+
+                              </span>
+
+                              <span *ngSwitchCase="'checkbox'" class="checkbox-custom-center">
+                                  <span *ngIf="!editRow(i,r,a)">
+                                      <mat-checkbox class="example-margin"
+                                          (change)="checkBox($event,i,r,a)"
+                                          [checked]="board">
+                                      </mat-checkbox>
+                                  </span>
+                              </span>
+
+                              <span *ngSwitchCase="'date'" class="custom-date">
+                                  <span *ngIf="!editRow(i,r,a)" class="date">
+                                        <span [matTooltip]="board == 'date' ? 'choose date' : board | date: 'mediumDate'"
+                                              (click) = "Clk_editRow(i,r,a)">
+                                          {{board == 'date' ? 'choose date' : board | date: 'mediumDate'}}
+                                        </span>
+                                  </span>
+
+                                  <div *ngIf="editRow(i,r,a)" class="date">
+                                          <input [matDatepicker]="myDatepicker"
+                                                 (click)="myDatepicker.open()"
+                                                 [min]="minDatePickerDate"
+                                                 class="custdate-picker"
+                                                 placeholder="Select Date"
+                                                 [value]="board"
+                                                 (dateChange)="changeRow_date($event,i,r,a)">
+
+                                          <div class="date-piker-icon">
+                                              <mat-datepicker-toggle matSuffix [for]="myDatepicker">
+                                                  <mat-icon class="cusdate-icon" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                                              </mat-datepicker-toggle>
+                                          </div>
+                                          <mat-datepicker #myDatepicker></mat-datepicker>
+                                  </div>
+                              </span>
+
+                              <span *ngSwitchCase="'invite'">
+                                      <ng-container *ngIf="board =='invite'">
+                                              <span class="text-css"
+                                                  id="invitename{{i}}_{{r}}_{{a}}"
+                                                  (click)="invitePerson($event,i,r,a,'n')"
+                                                  [matTooltip]="board == 'invite' ? 'Choose Person to Send Invitation' : board"
+                                                  *ngIf="!inviteBoolean(i,r)">
+                                                      {{board == 'invite' ? 'Choose Person to Send Invitation' : board }}
+                                                </span>
+                                                <span class="date"
+                                                    id="invitename{{i}}_{{r}}_{{a}}"
+                                                    *ngIf="inviteBoolean(i,r)">
+                                                        Loading...
+                                                  </span>
+                                    </ng-container>
+                                    <ng-container *ngFor="let project of personDetails">
+                                            <h3 *ngIf="board == project.id">
+                                                <span class="person-edit" id="uname{{i}}_{{r}}_{{a}}"
+                                                      (click)="invitePerson($event,i,r,a,'y')">
+                                                      {{ project.fullName  | titlecase  }}
+                                                </span>
+                                                <span class="inviteMsg">Invited</span>
+                                            </h3>
+                                    </ng-container>
+                              </span>
+
+                              <span *ngSwitchCase="'link'" class="urlBlock">
+                                    <span (click)="linkUpdate($event,i,r,a)"  matTooltip="{{board.url}}" class="linkspan">
+                                           <a href="http://{{board.url}}" target="_blank" class="url"><span (click)="closeUrlBox($event,i,r,a)">{{board.name}}</span></a>
+                                    </span>
+                                    <div id="link{{i}}{{r}}{{a}}" style="display:none" class="urlDivout">
+                                    <form class="urlDiv">
+                                        <div class="form-group-row">
+                                         <label>URL</label>
+                                           <input type="text" id="url{{i}}{{r}}{{a}}" name="url" value="{{board.url}}">
+                                         </div>
+                                         <div class="form-group-row">
+                                         <label>Name For Url:</label>
+
+                                            <input type="text" id="urlname{{i}}{{r}}{{a}}" name="urlname" value="{{board.name}}">
+                                         </div>
+                                         <div>
+                                           <button  class="option-save save-button urlbtn" (click)="afterSubmitUrl(i,r,a)">Save</button>
+                                           <button  class="option-close save-button urlbtn" (click)="closeUrlBox($event,i,r,a)">Cancel</button>
+                                        </div>
+                                    </form>
+                                    </div>
+                              </span>
+
+                              <span *ngSwitchCase="'location'">
+
+                                  <span *ngIf="!editRow(i,r,a)">
+                                      <span class="location-css"
+                                            (click) = "Clk_editRow(i,r,a)"
+                                            [matTooltip]="board == 'location' ? 'Enter Area Name' : board">
+                                        {{board == 'location' ? 'Enter Area Name' : board}}
+                                      </span>
+                                  </span>
+                                  <div *ngIf="editRow(i,r,a)">
+                                      <!-- <input type="text" value="{{board}}" (input)="onKey($event,i,r,a)" placeholder="Enter City Address"> -->
+                                      <ng4geo-autocomplete (componentCallback)="autoCompleteCallback1($event,i,r,a)" ></ng4geo-autocomplete>
+                                  </div>
+
+                              </span>
+
+                              <span *ngSwitchCase="'country'">
+                                  <span *ngIf="!editRow(i,r,a)">
+                                      <span class="date"
+                                            [matTooltip]="board == 'country' ? 'Please Select Country' : board"
+                                            (click) = "Clk_editRow(i,r,a)">
+                                        {{board == 'country' ? 'Please Select Country' : board}}
+                                      </span>
+                                  </span>
+                                  <p *ngIf="editRow(i,r,a)">
+                                      <input autocomplete
+                                            [config]="configCountry" [items]="Countryitems"
+                                            (inputChangedEvent)="onCountryChangedEvent($event)"
+                                            (selectEvent)="onCountrySelect($event,i,r,a)"
+                                            placeholder="Enter Country Name"
+                                            value="{{board == 'country' ? '' : board}}" class="customn-selector-text">
+                                   </p>
+                              </span>
+
+                              <span *ngSwitchCase="'status'" class="statusBlock">
+                                  <ng-container *ngFor="let op of options; index as o" >
+                                      <span *ngIf="o == board" (click)="statusUpdate($event,i,r,a)" class="statusSpan" [style.background]="op.color">
+                                          {{op.name}}
+                                      </span>
+                                  </ng-container>
+
+
+                                  <span *ngIf="board == 'status'" (click)="statusUpdate($event,i,r,a)" class="statusSpan">
+                                      {{board}}
+                                  </span>
+
+                                  <div id="statusChange{{i}}{{r}}{{a}}" class="statusOptions" style="display:none">
+                                          <div>
+                                              <div *ngIf="!show" class="inner-status">
+                                                <ng-container *ngFor="let op of options; index as o" >
+                                                    <div class="color-box">
+                                                      <span class="option-status"  [style.background]="op.color" (click)="chooseOption(o,i,r,a)">{{op.name}}</span></div>
+                                                </ng-container>
+                                              </div>
+
+                                              <form *ngIf="show" name="statusForm" [formGroup]="statusForm" class="color-status-form event-form w-100-p">
+
+                                                  <ng-container *ngFor="let op of options; index as i;">
+                                                      <input name="status{{i}}" type="text" value="{{op.name}}" (blur)="onKeyup($event,i)" [disabled]="op.disabled">
+                                                  </ng-container>
+
+                                              </form>
+                                          </div>
+                                          <div>
+                                              <div class="button-container">
+                                                      <button *ngIf="!show"
+                                                              mat-raised-button
+                                                              (click)="openFrm('t','')"
+                                                              class="option-save save-button mat-accent">
+                                                          Edit/Add Labels
+                                                      </button>
+                                                      <button *ngIf="show"
+                                                              mat-raised-button
+                                                              (click)="openFrm('f',statusForm)"
+                                                              class="option-save save-button mat-accent">
+                                                              Apply
+                                                      </button>
+                                                      <button (click)="closeStatusUpdate(i,r,a)" class="option-save save-button mat-accent">Close</button>
+                                              </div>
+                                          </div>
+                                  </div>
+                              </span>
+
+                              <span *ngSwitchCase="'person'">
+                                    <ng-container  *ngIf="board =='person'">
+                                        <span
+                                          [matTooltip]="board | titlecase"
+                                          id="uname{{i}}_{{r}}_{{a}}"
+                                          (click)="selectPerson($event,i,r,a)"
+                                          matTooltip="{{ board  }}"  class="person-name">
+                                          {{ board | titlecase }}</span>
+                                    </ng-container>
+                                    <ng-container *ngFor="let project of personDetails">
+                                            <h3 *ngIf="board == project.id">
+                                                <!-- <span class="person-edit" id="uname{{i}}_{{r}}_{{a}}" (click)="selectPerson($event,i,r,a)"> {{ project.fullName  | titlecase  }} </span> -->
+                                                <span   id="uname{{i}}_{{r}}_{{a}}" (click)="selectPerson($event,i,r,a)" matTooltip="{{ project.fullName  | titlecase  }}" *ngIf="project.Avatar"><img class="avatar" [src]="project.Avatar"></span>
+                                               <span   id="uname{{i}}_{{r}}_{{a}}" (click)="selectPerson($event,i,r,a)" matTooltip="{{ project.fullName  | titlecase  }}"  *ngIf="!project.Avatar" class="person-name">{{ project.fullName  | titlecase}}</span>
+                                               <!-- <div id="profileImage{{i}}_{{r}}_{{a}}" style="display:none"></div> -->
+                                            </h3>
+                                    </ng-container>
+                              </span>
+
+                              <span *ngSwitchCase="'timeline'" class="">
+                                <span (click)="ClkTimeline_editRow(i,r,a,'start')">
+                                        <span *ngIf="!editRow(i,r,a)" class="timeline"
+                                              [ngStyle]="{'background':timelineColor(i,r,dayDiff) ? 'red' : 'green'}"
+                                              on-mouseover='timelineMouseOver(i,r,board.start,board.end )'
+                                              on-mouseleave="timelineMouseLeave(i,r,board.start,board.end)">
+                                            <span *ngIf="!timelineOverStatus(i,r)">
+                                                <span (click) = "ClkTimeline_editRow(i,r,a,'start')">
+                                                  {{board.start == '' ? 'choose start date' : board.start | date: 'MMM dd'}}
+                                                </span>
+                                                <span> - </span>
+                                                <span (click) = "ClkTimeline_editRow(i,r,a,'end')">
+                                                  {{board.end == '' ? 'choose end date' : board.end | date: 'MMM dd'}}
+                                                </span>
+                                            </span>
+                                            <span *ngIf="timelineOverStatus(i,r)" >
+                                              <span *ngIf="timelineColor(i,r,dayDiff)" style="font-weight: 800;"><b>{{dayDiff}}</b></span>
+                                              <span *ngIf="!timelineColor(i,r,dayDiff)" style="font-weight: 800;"><b>{{dayDiff}}</b></span>
+                                            </span>
+                                        </span>
+
+                                        <div *ngIf="editRow(i,r,a)" class="timeline">
+                                            <div class="twin-calendar">
+                                                <input [matDatepicker]="myDatepickerstart"
+                                                      id="StartDate{{i}}{{r}}{{a}}"
+                                                      class="custdate-picker"
+                                                      placeholder="Select Start Date"
+                                                      (click)="myDatepickerstart.open()"
+                                                       #ref
+                                                      [min]="minDate"
+                                                      [value]="board.start"
+                                                      (dateChange)="changeTimeline_date(ref.value,$event,i,r,a,'start')">
+
+                                                <div class="date-piker-icon">
+                                                    <mat-datepicker-toggle matSuffix [for]="myDatepickerstart">
+                                                        <mat-icon class="cusdate-icon" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                                                    </mat-datepicker-toggle>
+                                                </div>
+                                                <mat-datepicker #myDatepickerstart></mat-datepicker>
+                                            </div>
+                                            <div class="twin-calendar">
+                                                <input [matDatepicker]="myDatepickerend"
+                                                       id="endDate{{i}}{{r}}{{a}}"
+                                                       class="custdate-picker"
+                                                       (click)="myDatepickerend.open()"
+                                                       [min]="minEndDate"
+                                                       placeholder="Select End Date"
+                                                       [value]="board.end"
+                                                       (dateChange)="changeTimeline_date('value',$event,i,r,a,'end')">
+                                                <div class="date-piker-icon">
+                                                    <mat-datepicker-toggle matSuffix [for]="myDatepickerend">
+                                                        <mat-icon class="cusdate-icon" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                                                    </mat-datepicker-toggle>
+                                                </div>
+                                                <mat-datepicker #myDatepickerend></mat-datepicker>
+                                            </div>
+
+                                            </div>
+                                </span>
+
+                              </span>
+
+
+                              <span *ngSwitchCase="'auto-number'" class="align-center-item">
+                                {{r + 1}}
+                              </span>
+
+                              <span *ngSwitchCase="'custom-field'">
+                                <span *ngIf="!editRow(i,r,a)">
+                                    <span class="location-css" (click) = "Clk_editRow(i,r,a)">
+                                        {{board == 'custom-field' ? 'Enter Custom Text' : board}}
+                                    </span>
+                                </span>
+                                <div *ngIf="editRow(i,r,a)">
+                                    <!-- <input type="text" value="{{board}}" (blur)="onKey($event,i,r,a)"> -->
+                                    <form [formGroup]="customFieldForm"
+                                          class="tabular-form">
+                                         <mat-form-field class="tabular-form-width">
+                                           <input matInput formControlName ="customField"
+                                                  [ngModel]="board == 'custom-field' ? '' : board"
+                                                  placeholder="Custom Field">
+                                            <mat-hint allign="start"
+                                             *ngIf="customFieldForm.controls['customField'].hasError('required') && customFieldForm.controls['customField'].touched"
+                                              style="color:#f44336">
+                                                  Custom Field is Required.
+                                          </mat-hint>
+                                          </mat-form-field>
+                                          <div class="edit-wrapper-btn">
+                                           <button class="number-btn-css"
+                                                    mat-min-fab color="primary"
+                                                    type="submit" (click)="onCustomFormSubmit(customFieldForm,i,r,a)">
+                                                    <mat-icon>done</mat-icon>
+                                            </button>
+
+                                           <button class="number-btn-css" mat-min-fab color="warn" type="cancel"
+                                            (click)="onClose(i,r,a)">
+                                            <mat-icon>clear</mat-icon>
+                                           </button>
+                                         </div>
+                                   </form>
+                                </div>
+                              </span>
+
+                                <!-- <span *ngSwitchCase="'comission'">
+                                    <span *ngIf="!relationalChange_boolean(i,r,a)">
+
+                                        {{__relational_vals(i,r,a,boardhead.heading[a].type)}}
+                                        ({{board}})
+                                    <ng-template #elsepart>
+                                      {{board}}
+                                    </ng-template>
+                                    <mat-icon (click)="relationalChange_clk(i,r,a)" class="row-edit-icn">edit</mat-icon>
+                                  </span>
+
+
+
+                                  <span *ngIf="relationalChange_boolean(i,r,a)" class="relational-ip">
+
+                                    <input type="number" value="{{board}}" (blur)="relationalChange($event,i,r,a)">
+
+                                  </span>
+
+                                </span> -->
+
+                                <span *ngSwitchCase="'subtraction'">
+                                    <span *ngIf="!relationalChange_boolean(i,r,a)">
+                                        {{__relational_vals(i,r,a,boardhead.heading[a].type)}}
+                                        ({{board}})
+
+                                      <!-- <ng-template #elsepart>
+                                        TEST {{board}}
+                                      </ng-template> -->
+
+                                      <mat-icon (click)="relationalChange_clk(i,r,a)" class="row-edit-icn">edit</mat-icon>
+                                    </span>
+
+                                    <span *ngIf="relationalChange_boolean(i,r,a)" class="relational-ip">
+                                       <input type="number" value="{{board}}" (blur)="relationalChange($event,i,r,a)" class="customn-selector-text">
+                                    </span>
+                                  </span>
+
+                                <span *ngSwitchCase="'percentage'">
+                                  <span *ngIf="!relationalChange_boolean(i,r,a)">
+                                        <!--  -->
+                                        <div (click)="relationalChange_clk(i,r,a)">
+                                              {{__relational_vals(i,r,a,boardhead.heading[a].type)}}
+                                              ({{board}})
+                                        </div>
+                                      <ng-template #elsepart>
+                                        <!-- {{board}} -->
+                                      </ng-template>
+                                      <!-- <mat-icon (click)="relationalChange_clk(i,r,a)" class="row-edit-icn">edit</mat-icon> -->
+                                    </span>
+
+                                  <span *ngIf="relationalChange_boolean(i,r,a)" class="relational-ip">
+                                    <input type="number" value="{{board}}" (blur)="relationalChange($event,i,r,a)" class="customn-selector-text">
+                                  </span>
+                                </span>
+
+                                <!-- <span *ngSwitchCase="'assign-task'">
+                                  Assign Task
+                                </span> -->
+                              </p>
+                          </td>
+                          <td></td>
+                      </tr>
+                    </table>
+                  </div>
+            </div>
+    </mat-drawer-content>
+  </mat-drawer-container>

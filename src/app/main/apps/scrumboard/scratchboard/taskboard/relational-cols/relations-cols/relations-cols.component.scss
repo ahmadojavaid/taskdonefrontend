@@ -1,0 +1,22 @@
+.selectbox{padding: 5px;
+    border: 1px solid #ddd;
+    font-size: 13px;
+    width: 100%;
+}
+
+.pull-btn-right {
+    float: right;
+    margin-top: -24px;
+    margin-right: -23px;
+}
+.container-outer-ui{
+  padding: 0px 0 10px 0px;
+  width: 100%;
+  display: inline-block;
+  .label-form{
+    margin-bottom: 5px;
+    display: inline-block;
+    width: 100%;
+    font-weight: 500;
+  }
+}

@@ -1,0 +1,33 @@
+<!-- BOARDS -->
+<div id="boards" class="mat-primary-200-bg content-height" fxLayout="column" fxFlex fusePerfectScrollbar>
+
+  <div class="header pt-44 pt-mat-88" fxFlex="0 0 auto"
+  [@animate]="{value:'*',params:{delay:'100ms'}}">
+      <!-- <h1 style="text-align: center;">Template</h1> -->
+  </div>
+
+  <div class="board-row" (click)="onRouterNavigate('0')">
+    <div class="board-box">
+      <mat-icon class="s-64">add_circle</mat-icon>
+      <h6>Start from Scratch</h6>
+    </div>
+  </div>
+  <div>
+
+<div class="tabular-row">
+  <div class="tabular-box tabular-box-custom" *ngFor="let template of templateList; let indx = index">
+    <mat-icon class="icon-css del-icon" style="cursor: pointer;" (click)="onBoardDelete(template.id,indx)">delete</mat-icon>
+    <mat-icon class="s-64" (click)="onRouterNavigate(template.id)">call_to_action</mat-icon>
+    <h6 (click)="onRouterNavigate(template.id)">{{template.project_name}}</h6>
+  </div>
+  </div>
+
+      <div class="tabular-row" *ngIf="loadMoreButton && !loadingValue">
+          <button mat-raised-button
+                  color="primary"
+                  (click)="ehLoadMore()">
+                  Load More
+          </button>
+    </div>
+<div>
+  <fuse-common-loader [loading]="loadingValue"></fuse-common-loader>

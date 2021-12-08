@@ -1,0 +1,37 @@
+@import "src/@fuse/scss/fuse";
+
+:host {
+
+    mat-sidenav-container {
+        width: 100%;
+        height: 100%;
+
+        #tabular-main {
+            display: flex;
+            flex-direction: column !important;
+            height: 100%;
+        }
+        .header {
+            position: relative;
+            min-height: 96px;
+            background-image: none;
+            z-index: 49;
+        }
+    }
+}
+
+mat-icon.back-btn.board-subscribe.s-16.mat-icon.material-icons {
+    font-size: 63px !important;
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px !important;
+    min-height: 16px !important;
+    line-height: 16px !important;
+    margin-left: 894px;
+}
+
+.custom-autocomplete__dropdown li {
+    float: left !important;
+    width: 100% !important;;
+    font-size: 3px !important;;
+}

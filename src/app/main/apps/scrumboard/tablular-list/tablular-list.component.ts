@@ -1,0 +1,154 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatDialog, MatDialogRef,MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material';
+import { FuseConfirmDialogComponent } from '@fuse/components/confirm-dialog/confirm-dialog.component';
+import { TabularService } from './services/tabular.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { fuseAnimations } from '@fuse/animations';
+
+@Component({
+  selector: 'app-tablular-list',
+  templateUrl: './tablular-list.component.html',
+  styleUrls: ['./tablular-list.component.scss'],
+  animations : fuseAnimations
+})
+export class TablularListComponent implements OnInit {
+   public errorMessage:String;
+   public templateList = [];
+   public totalCount:number;
+   cols: string = "3"
+   start:number = 0;
+   limit:number = 1;
+   loadMoreButton:boolean = true;
+   loadingValue:boolean = true;
+   confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
+   horizontalPosition: MatSnackBarHorizontalPosition = 'end';
+   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+
+  constructor(
+      private _router : Router,
+      private _matDialog: MatDialog,
+      private snackBar: MatSnackBar,
+      private _tabularService : TabularService) {}
+
+  ngOnInit() {
+    this.getTemplateProject();
+  }
+
+  /* Get Templates from Service */
+  getTemplateProject(){
+    const data = {
+       "status":1,
+       "start":this.start,
+       "limit":this.limit
+   }
+    this._tabularService.getTemplateProject(data).subscribe(
+      (resp) => {
+        this.loadingValue = false;
+        if (resp.statusCode === "200") {
+            this.totalCount = resp.totalCount;
+            this.templateList = resp.templateList;
+            if(this.templateList.length == this.totalCount)
+            this.loadMoreButton = false;
+          }else if(resp.statusCode === "400"){
+            this.loadMoreButton = false;
+            this.errorMessage = resp.statusMessage;
+          }else if(resp.statusCode === "1000"){
+            this.loadMoreButton = false;
+            this.snackBar.open(resp.statusMessage, 'X', {
+                duration: 5000,
+                horizontalPosition: this.horizontalPosition,
+                verticalPosition: "top",
+            });
+            setInterval(() => {
+              localStorage.removeItem('userToken');
+              this._router.navigate(['/pages/auth/login-2']);
+           },3000);
+          }
+      })
+    }
+
+    /*Load More from Service */
+    ehLoadMore(){
+      this.start += this.limit;
+        let loadData = {
+           "status":1,
+           "start":this.start,
+           "limit":this.limit
+       }
+       this._tabularService.getTemplateProject(loadData).subscribe(
+         (resp) => {
+           this.loadingValue = false;
+           if (resp.statusCode === "200") {
+              this.totalCount = resp.totalCount;
+               let loadproducts = resp.templateList;
+                loadproducts.forEach((item, index) => {
+                   this.templateList.push(item);
+               });
+             if(this.templateList.length == this.totalCount)
+              this.loadMoreButton = false;
+             }else if(resp.statusCode === "400"){
+               this.loadMoreButton = false;
+               this.errorMessage = resp.statusMessage;
+             }else if(resp.statusCode === "1000"){
+               this.loadMoreButton = false;
+               this.snackBar.open(resp.statusMessage, 'X', {
+                   duration: 5000,
+                   horizontalPosition: this.horizontalPosition,
+                   verticalPosition: "top",
+               });
+               setInterval(() => {
+                 localStorage.removeItem('userToken');
+                 this._router.navigate(['/pages/auth/login-2']);
+              },3000);
+             }
+         })
+    }
+
+    /* On Board deleted */
+    onBoardDelete(boardId,index){
+      this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent,{
+          disableClose: false
+      });
+      this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want to delete this Template ?';
+
+      this.confirmDialogRef.afterClosed().subscribe(result => {
+          if (result){
+              const deleteTemplateData = {
+                "board_id":boardId
+              }
+             this._tabularService.deleteGroupDataTabular(deleteTemplateData).subscribe(
+               (resp)=>{
+                 if(resp.statusCode == '200'){
+                   this.snackBar.open("Template Deleted Successfully.", 'X', {
+                       duration: 5000,
+                       horizontalPosition: this.horizontalPosition,
+                       verticalPosition: this.verticalPosition,
+                  });
+                  this.templateList.splice(index, 1);
+                  this.getTemplateProject();
+                 }else{
+                   this.snackBar.open(resp.statusMessage, 'X', {
+                       duration: 5000,
+                       horizontalPosition: this.horizontalPosition,
+                       verticalPosition: this.verticalPosition,
+                  });
+                 }
+               })
+             }
+          this.confirmDialogRef = null;
+      });
+
+    }
+
+  /* Re-direct to other Route */
+  onRouterNavigate(id){
+    if(id !== '0'){
+      this._router.navigate(['/apps/scrumboard/boards/tabular'] ,{ queryParams:{id} });
+    }else{
+      this._router.navigate(['/apps/scrumboard/boards/tabular']);
+    }
+  }
+
+}

@@ -1,0 +1,108 @@
+<div id="products" class="page-layout carded fullwidth inner-scroll">
+
+    <!-- TOP BACKGROUND -->
+    <div class="top-bg mat-accent-bg"></div>
+    <!-- / TOP BACKGROUND -->
+
+    <!-- CENTER -->
+    <div class="center">
+
+        <!-- HEADER -->
+        <div class="header mat-accent-bg"
+             fxLayout="column" fxLayoutAlign="center center"
+             fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+            <!-- APP TITLE -->
+            <div class="logo my-12 m-sm-0"
+                 fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">
+                    shopping_basket
+                </mat-icon>
+                <span class="logo-text h1" [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">
+                    Categories
+                </span>
+            </div>
+            <!-- / APP TITLE -->
+
+            <!-- SEARCH -->
+            <!-- <div class="search-input-wrapper mx-24 m-md-0"
+                 fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+                <label for="search" class="mr-8">
+                    <mat-icon class="secondary-text">search</mat-icon>
+                </label>
+                <mat-form-field floatLabel="never" fxFlex="1 0 auto">
+                    <input id="search" matInput #filter placeholder="Search">
+                </mat-form-field>
+            </div> -->
+            <!-- / SEARCH -->
+
+            
+
+        </div>
+        <!-- / HEADER -->
+
+        <!-- CONTENT CARD -->
+        <div class="content-card mat-white-bg">
+
+            <!-- <mat-table class="products-table"
+                       #table [dataSource]="dataSource"
+                      
+                       [@animateStagger]="{value:'50'}"
+                       fusePerfectScrollbar>
+
+                
+                <ng-container cdkColumnDef="id">
+                    <mat-header-cell *cdkHeaderCellDef >ID</mat-header-cell>
+                    <mat-cell *cdkCellDef="let element">
+                        <p class="text-truncate">{{element.id}}</p>
+                    </mat-cell>
+                </ng-container>
+
+                
+
+                
+                <ng-container cdkColumnDef="name">
+                    <mat-header-cell *cdkHeaderCellDef >Name</mat-header-cell>
+                    <mat-cell *cdkCellDef="let element">
+                        <p class="text-truncate">{{element.name}}</p>
+                    </mat-cell>
+                </ng-container>
+
+                
+
+                <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+
+                
+
+            </mat-table> -->
+            <mat-table style="margin-top: 30px"  [dataSource]="dataSource"   
+            fusePerfectScrollbar>
+
+                <!--- Note that these columns can be defined in any order.
+                      The actual rendered columns are set as a property on the row definition" -->
+              
+                <!-- Position Column -->
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef> ID </th>
+                  <td mat-cell *matCellDef="let element" style="text-align: center; "><p  class="text-truncate">{{element.id}}</p> </td>
+                </ng-container>
+              
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef style="padding-left: 280px;"> Name </th>
+                  <td mat-cell *matCellDef="let element" style="text-align: center; padding-right: 124px;
+                  padding-left: 240px;"  fxHide fxShow.gt-xs> <p class="text-truncate">{{element.categoryName}}</p> </td>
+                </ng-container>
+              
+               
+              
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </mat-table>
+            
+
+        </div>
+        <!-- / CONTENT CARD -->
+    </div>
+    <!-- / CENTER -->
+</div>

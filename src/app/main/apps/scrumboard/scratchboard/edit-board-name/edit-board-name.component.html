@@ -1,0 +1,117 @@
+<div  *ngIf="!formActive"
+       class="board-name"
+       fxFlex="1 1 auto" style="width:100%" fxLayout="row" fxLayoutAlign="start center">
+    <h2> {{defaultname}}</h2>
+    <button mat-icon-button (click)="openForm(defaultname)">
+        <mat-icon class="s-16">edit_mode</mat-icon>
+    </button>
+</div>
+
+<form [formGroup]="form"
+      class="board-name-form" fxLayout="row" fxFlex="1 0 auto"
+      *ngIf="formActive">
+
+    <input formControlName="name"
+           #nameInput
+           fxFlex="1 0 auto"
+           class="form-search"
+           placeholder="Write a board name">
+
+    <!-- <button mat-icon-button fxFlex="0 1 auto">
+        <mat-icon>check</mat-icon>
+    </button> -->
+
+    <div class="" fxFlex="0 1 auto" fxLayout="row" fxLayoutAlign="start center">
+
+        <button mat-button [matMenuTriggerFor]="userMenu"
+                class="user-button user-button-option">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <!-- <img class="avatar" src="assets/images/avatars/profile.jpg"> -->
+                <span class="username mr-12" fxHide fxShow.gt-sm>Options</span>
+                <mat-icon class="s-16" fxHide.xs>keyboard_arrow_down</mat-icon>
+            </div>
+        </button>
+
+        <mat-menu #userMenu="matMenu" [overlapTrigger]="false">
+           <div *ngIf="boardStatus == 3">
+             <button mat-menu-item type="submit" (click)="onFormSubmit(form,'1','newTemplate')">
+                <mat-icon>save</mat-icon>
+                <span>Save as a Template</span>
+            </button>
+
+            <button mat-menu-item type="submit" (click)="onFormSubmit(form,'0','newProject')">
+                <mat-icon>save</mat-icon>
+                <span>Save as a Project</span>
+            </button>
+
+            <button mat-menu-item type="submit" (click)="onFormSubmit(form,'2','both')">
+                <mat-icon>save</mat-icon>
+                <span>Save as a Both</span>
+            </button>
+          </div>
+
+          <div *ngIf="boardStatus == 0">
+            <button mat-menu-item type="submit" (click)="onFormSubmit(form,'0','projectUpdate')">
+                 <mat-icon>save</mat-icon>
+                 <span>Save</span>
+             </button>
+
+            <button mat-menu-item type="submit" (click)="onFormSubmit(form,'0','newProject')">
+                  <mat-icon>save</mat-icon>
+                  <span>Save as a Project</span>
+              </button>
+
+              <button mat-menu-item type="submit" (click)="onFormSubmit(form,'1','newTemplate')">
+                  <mat-icon>save</mat-icon>
+                  <span>Save as a New Template</span>
+              </button>
+          </div>
+
+          <div *ngIf="boardStatus == 1">
+             <button mat-menu-item type="submit" (click)="onFormSubmit(form,'1','templateUpdate')">
+                 <mat-icon>save</mat-icon>
+                 <span>Save</span>
+             </button>
+
+            <button mat-menu-item type="submit" (click)="onFormSubmit(form,'1','newTemplate')">
+                  <mat-icon>save</mat-icon>
+                  <span>Save as a Template</span>
+              </button>
+
+              <button mat-menu-item type="submit" (click)="onFormSubmit(form,'0','newProject')">
+                  <mat-icon>save</mat-icon>
+                  <span>Save as a New Project</span>
+              </button>
+          </div>
+
+          <div *ngIf="boardStatus == 2">
+            <button mat-menu-item type="submit" (click)="onFormSubmit(form,'2','bothUpdate')">
+                 <mat-icon>save</mat-icon>
+                 <span>Save</span>
+             </button>
+
+            <button mat-menu-item type="submit" (click)="onFormSubmit(form,'0','newProject')">
+                  <mat-icon>save</mat-icon>
+                  <span>Save as a New Project</span>
+              </button>
+
+              <button mat-menu-item type="submit" (click)="onFormSubmit(form,'1','newTemplate')">
+                  <mat-icon>save</mat-icon>
+                  <span>Save as a New Template</span>
+              </button>
+          </div>
+        </mat-menu>
+
+    <button mat-icon-button fxFlex="0 1 auto" (click)="closeForm()" type="button">
+        <mat-icon>close</mat-icon>
+    </button>
+ </div>
+</form>
+
+      <div class="back-arrow">
+          <mat-icon class="back-btn board-subscribe s-16"
+                    (click)="onBack()"
+                    style="cursor:pointer;">
+                    keyboard_backspace
+          </mat-icon>
+       </div>
